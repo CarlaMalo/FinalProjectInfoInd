@@ -69,7 +69,7 @@ while True:
 	plt.pause(0.000001) #Pausa en el ciclo
 	cnt=cnt+1
 
-	#Empezará a borrar los datos a partir de 50 elementos
+	#Empezará a borrar los datos a partir de 30 elementos
 	if(cnt>30): 
 		#Quita el primer dato
 		tempC.pop(0)
