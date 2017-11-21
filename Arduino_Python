@@ -11,28 +11,35 @@ cnt=0
 plt.ion()#Interactive mode  plotea live data
 
 #Crea la figura con los datos recibidos
+
+plt.figure()
 def plotFig():
-	plt.figure(1)
+
+
+	plt.subplot(2,1,1)
+	plt.plot(tempC,"ro-", label="Temp. Celsius")
 	plt.ylim(0,50)
 	plt.title("Gráfica de Temperatura y Humedad en Tiempo Real")
 	plt.grid(True)
 	plt.ylabel("Temperatura ºC")
-	plt.plot(tempC,"ro-", label="Temp. Celsius")
 	plt.legend(loc="upper left") 
+
+	plt.subplot(2,1,1)
 	plt2= plt.twinx()
+	plt2.plot(Humidity,"b^-", label="Humedad %")
 	plt2.set_ylabel("Humedad Relativa %")
 	plt.ylim(10,100)
-	plt2.plot(Humidity,"b^-", label="Humedad %")
 	plt2.ticklabel_format(useOffser=False) #No auto-scale
 	plt2.legend(loc="upper right")
 
-	plt.figure(2)
+	plt.subplot(2,1,2)
+	plt.plot(Soil,"go-")
 	plt.ylim(0,1300)
 	plt.title("Gráfica de Humadad en la tierra")
 	plt.grid(True)
 	plt.ylabel("No sé")
-	plt.plot(Soil,"bo-")
-
+	
+	plt.show()
 
 
 while True: 
