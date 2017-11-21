@@ -1,0 +1,71 @@
+import serial 
+import numpy
+import matplotlib.pyplot as plt #importa matplotlib library
+from drawnow import *
+
+arduinoData= serial.Serial("/dev/cu.usbmodem1421",115200)
+tempC=[]
+Humidity=[]
+Soil=[]
+cnt=0
+plt.ion()#Interactive mode  plotea live data
+
+#Crea la figura con los datos recibidos
+def plotFig():
+	plt.figure(1)
+	plt.ylim(0,50)
+	plt.title("Gráfica de Temperatura y Humedad en Tiempo Real")
+	plt.grid(True)
+	plt.ylabel("Temperatura ºC")
+	plt.plot(tempC,"ro-", label="Temp. Celsius")
+	plt.legend(loc="upper left") 
+	plt2= plt.twinx()
+	plt2.set_ylabel("Humedad Relativa %")
+	plt.ylim(10,100)
+	plt2.plot(Humidity,"b^-", label="Humedad %")
+	plt2.ticklabel_format(useOffser=False) #No auto-scale
+	plt2.legend(loc="upper right")
+
+	plt.figure(2)
+	plt.ylim(0,1300)
+	plt.title("Gráfica de Humadad en la tierra")
+	plt.grid(True)
+	plt.ylabel("No sé")
+	plt.plot(Soil,"bo-")
+
+
+
+while True: 
+	while(arduinoData.inWaiting()==0):
+		pass #do nothing
+
+	arduinobinary = arduinoData.readline()	#lo Lee del puerto serial
+
+	#Lo convierte de binario a string
+	arduinoString= arduinobinary.decode() 
+
+	#separa en un array a la temp y a la humedad
+	dataArray = arduinoString.split(",") 
+	dataArray1= [x.rstrip() for x in dataArray]	#quita r/n
+
+	#Convierte los elementos convierte a float
+	temp= float(dataArray1[0])
+	H = float(dataArray1[1])
+	S = float(dataArray1[2])
+	
+	#agrega los datos a un arreglo
+	tempC.append(temp)
+	Humidity.append(H)
+	Soil.append(S)
+
+	drawnow(plotFig) #LLama a la función para actualizar la gráfica
+	plt.pause(0.000001) #Pausa en el ciclo
+	cnt=cnt+1
+
+	#Empezará a borrar los datos a partir de 50 elementos
+	if(cnt>30): 
+		#Quita el primer dato
+		tempC.pop(0)
+		Humidity.pop(0)
+		Soil.pop(0)
+
